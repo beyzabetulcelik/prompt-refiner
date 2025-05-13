@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>✨ Prompt Refiner</title>
+</head>
+<body>
+  <div style="max-width: 600px; margin: auto; font-family: sans-serif;">
+    <h2>✨ Prompt Refiner</h2>
+
+    <label for="prompt">Your prompt:</label><br>
+    <textarea id="prompt" rows="4" style="width:100%; margin-bottom: 12px;"></textarea><br>
+
+    <label for="type">Prompt type:</label><br>
+    <select id="type" style="width:100%; margin-bottom: 12px;">
+      <option value="text">🧠 Text Generator (ChatGPT)</option>
+      <option value="image">🖼️ Image Generator (DALL·E / Midjourney)</option>
+      <option value="code">👨‍💻 Code Assistant (Copilot)</option>
+      <option value="data">📈 Data Report / Analytics</option>
+      <option value="email">✉️ E-mail Writer</option>
+      <option value="chat">🎭 Role Play / Chatbot</option>
+      <option value="debugger">🧪 Debugger</option>
+    </select>
+
+    <button id="refineBtn" style="padding: 10px 20px; background: black; color: white; border: none; cursor: pointer;">
+      Refine Prompt
+    </button>
+
+    <div id="result" style="margin-top: 24px; white-space: pre-wrap;"></div>
+  </div>
+
+  <script defer>
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("refineBtn").addEventListener("click", async () => {
+        const prompt = document.getElementById("prompt").value;
+        const type = document.getElementById("type").value;
+        const resultDiv = document.getElementById("result");
+
+        resultDiv.innerHTML = "⏳ Refining your prompt...";
+
+        try {
+          const response = await fetch("https://3874-88-241-224-98.ngrok-free.app/webhook/prompt-refiner", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt, type })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            resultDiv.innerHTML = `🎯 Refined Prompt:\n${data.refinedPrompt || '(no refinedPrompt returned)'}\n\n🧠 AI Output:\n${data.aiOutput || '(no aiOutput returned)'}`;
+          } else {
+            resultDiv.innerHTML = "❌ Failed to refine prompt. Server error.";
+          }
+        } catch (error) {
+          resultDiv.innerHTML = `🚨 Fetch error: ${error.message}`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
