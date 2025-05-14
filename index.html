@@ -1,61 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>✨ Prompt Refiner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Refiner</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      font-size: 2em;
+      color: #2e2e2e;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+    }
+    textarea, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 15px;
+      font-size: 1em;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 6px;
+    }
+    .note {
+      font-size: 0.9em;
+      color: #777;
+      margin-top: 20px;
+      border-top: 1px dashed #ccc;
+      padding-top: 15px;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-  <div style="max-width: 600px; margin: auto; font-family: sans-serif;">
-    <h2>✨ Prompt Refiner</h2>
+  <h1>✨ Prompt Refiner</h1>
 
-    <label for="prompt">Your prompt:</label><br>
-    <textarea id="prompt" rows="4" style="width:100%; margin-bottom: 12px;"></textarea><br>
+  <label for="prompt">Your prompt:</label>
+  <textarea id="prompt" rows="4" placeholder="Örn: bir e-posta yaz..."></textarea>
 
-    <label for="type">Prompt type:</label><br>
-    <select id="type" style="width:100%; margin-bottom: 12px;">
-      <option value="text">🧠 Text Generator (ChatGPT)</option>
-      <option value="image">🖼️ Image Generator (DALL·E / Midjourney)</option>
-      <option value="code">👨‍💻 Code Assistant (Copilot)</option>
-      <option value="data">📈 Data Report / Analytics</option>
-      <option value="email">✉️ E-mail Writer</option>
-      <option value="chat">🎭 Role Play / Chatbot</option>
-      <option value="debugger">🧪 Debugger</option>
-    </select>
+  <label for="tone">Tone:</label>
+  <select id="tone">
+    <option value="resmi">Resmi</option>
+    <option value="samimi">Samimi</option>
+    <option value="mizahi">Mizahi</option>
+    <option value="sade">Sade</option>
+  </select>
 
-    <button id="refineBtn" style="padding: 10px 20px; background: black; color: white; border: none; cursor: pointer;">
-      Refine Prompt
-    </button>
+  <label for="platform">Platform:</label>
+  <select id="platform">
+    <option value="ChatGPT">ChatGPT</option>
+    <option value="Midjourney">Midjourney</option>
+    <option value="Suno">Suno</option>
+  </select>
 
-    <div id="result" style="margin-top: 24px; white-space: pre-wrap;"></div>
+  <button onclick="refinePrompt()">Refine Prompt</button>
+
+  <h2>🌟 Refined Prompt:</h2>
+  <div id="output">Henüz bir çıktı yok.</div>
+
+  <div class="note">
+    ⚠️ Bu demo, kendi bilgisayarımda çalışan lokal bir sunucuya bağlıdır. 
+    Eğer çalışmıyorsa şarjım bitmiştir ya da bilgisayar kapandı 😓
+    Detaylar için: <a href="/ai-automation-projects/prompt-refiner" target="_blank">Proje Sayfası</a>
   </div>
 
-  <script defer>
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("refineBtn").addEventListener("click", async () => {
-        const prompt = document.getElementById("prompt").value;
-        const type = document.getElementById("type").value;
-        const resultDiv = document.getElementById("result");
+  <script>
+    async function refinePrompt() {
+      const prompt = document.getElementById("prompt").value;
+      const tone = document.getElementById("tone").value;
+      const platform = document.getElementById("platform").value;
 
-        resultDiv.innerHTML = "⏳ Refining your prompt...";
+      try {
+        const response = await fetch("http://localhost:5000/api/refine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, tone, platform })
+        });
 
-        try {
-          const response = await fetch("https://3874-88-241-224-98.ngrok-free.app/webhook/prompt-refiner", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt, type })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            resultDiv.innerHTML = `🎯 Refined Prompt:\n${data.refinedPrompt || '(no refinedPrompt returned)'}\n\n🧠 AI Output:\n${data.aiOutput || '(no aiOutput returned)'}`;
-          } else {
-            resultDiv.innerHTML = "❌ Failed to refine prompt. Server error.";
-          }
-        } catch (error) {
-          resultDiv.innerHTML = `🚨 Fetch error: ${error.message}`;
-        }
-      });
-    });
+        const data = await response.json();
+        document.getElementById("output").innerText = data.refined || "Refine edilemedi.";
+      } catch (err) {
+        document.getElementById("output").innerText = "🚨 Bağlantı hatası. Belki de Betül'ün bilgisayarı uykudadır.";
+      }
+    }
   </script>
 </body>
 </html>
