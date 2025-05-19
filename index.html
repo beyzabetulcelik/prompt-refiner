@@ -1,67 +1,33 @@
-
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prompt Refiner</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #f9f9f9;
-      color: #333;
-    }
-    h1 {
-      font-size: 2em;
-      color: #2e2e2e;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 15px;
-      display: block;
-    }
-    textarea, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      margin-bottom: 15px;
-      font-size: 1em;
-    }
-    #output {
-      white-space: pre-wrap;
-      background: #fff;
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 6px;
-    }
-    .note {
-      font-size: 0.9em;
-      color: #777;
-      margin-top: 20px;
-      border-top: 1px dashed #ccc;
-      padding-top: 15px;
-    }
-    a {
-      color: #0066cc;
-      text-decoration: none;
-    }
+    body { font-family: 'Segoe UI', sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; background: #f9f9f9; color: #333; }
+    h1 { font-size: 2em; color: #2e2e2e; }
+    label { font-weight: bold; margin-top: 15px; display: block; }
+    textarea, select, button { width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 15px; font-size: 1em; }
+    #output { white-space: pre-wrap; background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 6px; }
+    .note { font-size: 0.9em; color: #777; margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; }
   </style>
 </head>
 <body>
   <h1>✨ Prompt Refiner</h1>
 
   <label for="prompt">Your prompt:</label>
-  <textarea id="prompt" rows="4" placeholder="Örn: bir e-posta yaz..."></textarea>
+  <textarea id="prompt" rows="4" placeholder="E.g. I can't open my file..."></textarea>
 
-  <label for="tone">Tone:</label>
-  <select id="tone">
-    <option value="resmi">Resmi</option>
-    <option value="samimi">Samimi</option>
-    <option value="mizahi">Mizahi</option>
-    <option value="sade">Sade</option>
+  <label for="intent">What do you want to do?</label>
+  <select id="intent">
+    <option value="bilgi">Get Information</option>
+    <option value="mail">Write an Email</option>
+    <option value="hata">Fix a Problem</option>
+    <option value="kod">Generate Code</option>
+    <option value="gorsel">Visual Prompt (Midjourney)</option>
+    <option value="acikla">Explain Something</option>
+    <option value="fikir">Get Creative Ideas</option>
   </select>
 
   <label for="platform">Platform:</label>
@@ -74,31 +40,29 @@
   <button onclick="refinePrompt()">Refine Prompt</button>
 
   <h2>🌟 Refined Prompt:</h2>
-  <div id="output">Henüz bir çıktı yok.</div>
+  <div id="output">No output yet.</div>
 
   <div class="note">
-    ⚠️ Bu demo, kendi bilgisayarımda çalışan lokal bir sunucuya bağlıdır. 
-    Eğer çalışmıyorsa şarjım bitmiştir ya da bilgisayar kapandı 😓
-    Detaylar için: <a href="/ai-automation-projects/prompt-refiner" target="_blank">Proje Sayfası</a>
+    ⚠️ This demo runs on a local server. If it doesn't work, the computer might be offline.
   </div>
 
   <script>
     async function refinePrompt() {
       const prompt = document.getElementById("prompt").value;
-      const tone = document.getElementById("tone").value;
+      const intent = document.getElementById("intent").value;
       const platform = document.getElementById("platform").value;
 
       try {
         const response = await fetch("http://localhost:5000/api/refine", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, tone, platform })
+          body: JSON.stringify({ prompt, intent, platform })
         });
 
         const data = await response.json();
-        document.getElementById("output").innerText = data.refined || "Refine edilemedi.";
+        document.getElementById("output").innerText = data.refined || "No refined prompt returned.";
       } catch (err) {
-        document.getElementById("output").innerText = "🚨 Bağlantı hatası. Belki de Betül'ün bilgisayarı uykudadır.";
+        document.getElementById("output").innerText = "🚨 Connection error. Local server might be offline.";
       }
     }
   </script>
