@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Prompt Refiner</title>
+  <title>Prompt Refiner – Rewrite Prompts Like an Expert</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -22,7 +22,7 @@
       margin-top: 15px;
       display: block;
     }
-    textarea, button {
+    textarea, select, button {
       width: 100%;
       padding: 10px;
       margin-top: 8px;
@@ -43,36 +43,65 @@
       border-top: 1px dashed #ccc;
       padding-top: 15px;
     }
+    small {
+      font-size: 0.9em;
+      color: #666;
+      display: block;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
-  <h1>Prompt Refiner</h1>
+  <h1>🛠️ Prompt Refiner</h1>
 
-  <label for="prompt">Your prompt:</label>
-  <textarea id="prompt" rows="4" placeholder="E.g. Help me name my startup..."></textarea>
+  <label for="prompt">Your Prompt:</label>
+  <textarea id="prompt" rows="4" placeholder="E.g. help me market my product..."></textarea>
+
+  <label for="intent">Intent:</label>
+  <small>Select what you’re trying to do. Hover for explanation.</small>
+  <select id="intent">
+    <option value="" title="Let the system automatically detect what you're trying to do">Auto-detect</option>
+    <option value="get_info" title="Ask a clear and specific question to get factual information">Get Information</option>
+    <option value="write_email" title="Reframe your message as a polished, professional email">Write an Email</option>
+    <option value="fix_problem" title="State your issue clearly so the system can help troubleshoot it">Fix a Problem</option>
+    <option value="generate_code" title="Turn your request into a code-generation prompt">Generate Code</option>
+    <option value="midjourney_prompt" title="Describe a visual scene for image generation tools like Midjourney">Midjourney Prompt</option>
+    <option value="explain" title="Ask the system to explain a concept clearly and simply">Explain Something</option>
+    <option value="creative_idea" title="Request creative ideas, such as names, projects, or slogans">Get Creative Ideas</option>
+  </select>
+
+  <label for="platform">Platform:</label>
+  <small>Which tool will use this prompt?</small>
+  <select id="platform">
+    <option value="ChatGPT" title="Text-based assistant powered by OpenAI">ChatGPT</option>
+    <option value="Midjourney" title="AI-powered visual art generation tool">Midjourney</option>
+    <option value="Suno" title="AI music generation platform using text prompts">Suno</option>
+  </select>
 
   <button onclick="refinePrompt()">Refine Prompt</button>
 
-  <h2>🌟 Refined Prompt:</h2>
+  <h2>✨ Refined Prompt:</h2>
   <div id="output">No output yet.</div>
 
   <div class="note">
-    ⚠️ This is a frontend demo. If nothing happens, make sure your backend is running on <code>localhost:5000</code>.
+    ⚠️ Make sure your backend is running at <code>http://localhost:5000</code> before clicking the button.
   </div>
 
   <script>
     async function refinePrompt() {
       const prompt = document.getElementById("prompt").value;
+      const intent = document.getElementById("intent").value;
+      const platform = document.getElementById("platform").value;
 
       try {
         const response = await fetch("http://localhost:5000/api/refine", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt })
+          body: JSON.stringify({ prompt, intent, platform })
         });
 
         const data = await response.json();
-        document.getElementById("output").innerText = data.refined || "No refined prompt returned.";
+        document.getElementById("output").innerText = data.refined || "⚠️ No refined prompt returned.";
       } catch (err) {
         document.getElementById("output").innerText = "🚨 Connection error. Is the backend server online?";
       }
