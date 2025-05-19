@@ -3,109 +3,249 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Prompt Refiner – Rewrite Prompts Like an Expert</title>
+  <title>Prompt Refiner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
+    :root {
+      --bg: #ffffff;
+      --text: #222222;
+      --accent: #f28c38;
+      --accent-dark: #d46b14;
+      --card-bg: #f7f7f7;
+      --border: #e3e3e3;
+      --shadow: rgba(0, 0, 0, 0.05);
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #f9f9f9;
-      color: #333;
+      font-family: 'Rubik', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
     }
-    h1 {
-      font-size: 2em;
-      color: #2e2e2e;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 15px;
-      display: block;
-    }
-    textarea, select, button {
+
+    .form-container {
       width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      margin-bottom: 15px;
-      font-size: 1em;
+      max-width: 640px;
     }
-    #output {
-      white-space: pre-wrap;
-      background: #fff;
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 6px;
-    }
-    .note {
-      font-size: 0.9em;
-      color: #777;
-      margin-top: 20px;
-      border-top: 1px dashed #ccc;
-      padding-top: 15px;
-    }
-    small {
-      font-size: 0.9em;
-      color: #666;
+
+h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 40px;
+}
+
+
+    label {
+      font-weight: 500;
+      font-size: 1rem;
+      margin-bottom: 4px;
       display: block;
-      margin-bottom: 5px;
+    }
+
+    small {
+      font-size: 0.85rem;
+      color: #777;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    textarea, select, button, #output {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    textarea, select {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Rubik', sans-serif;
+      margin-bottom: 24px;
+      background: var(--card-bg);
+    }
+
+    button {
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 500;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+    }
+
+
+
+    #refinedText {
+      font-size: 1rem;
+      line-height: 1.6;
+      min-height: 40px;
+      color: var(--text);
+
+      display: block;
+  padding-right: 40px; /* sağ üstteki ikona yer açmak için */
+  display: block;
+    }
+
+#output {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 30px;
+  position: relative; /* 💡 Bu çok önemli */
+  box-shadow: 0 4px 12px var(--shadow);
+  padding-right: 50px; /* 🔒 Sağa boşluk bırak, ikona yer aç */
+  min-height: 60px;
+}
+
+#copyBtn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 24px;
+}
+
+.material-icons {
+  font-size: 20px;
+  color: #999;
+  transition: all 0.2s ease;
+}
+
+#copyBtn:hover .material-icons {
+  color: var(--accent);
+  transform: scale(1.2);
+}
+
+
+#copyBtn:hover {
+  transform: scale(1.2);
+  color: var(--accent);
+}
+
+
+
+    h2 {
+      margin-top: 50px;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .fade {
+      opacity: 0.6;
+      font-style: italic;
     }
   </style>
 </head>
 <body>
-  <h1>🛠️ Prompt Refiner</h1>
+  <div class="form-container">
 
-  <label for="prompt">Your Prompt:</label>
-  <textarea id="prompt" rows="4" placeholder="E.g. help me market my product..."></textarea>
 
-  <label for="intent">Intent:</label>
-  <small>Select what you’re trying to do. Hover for explanation.</small>
-  <select id="intent">
-    <option value="" title="Let the system automatically detect what you're trying to do">Auto-detect</option>
-    <option value="get_info" title="Ask a clear and specific question to get factual information">Get Information</option>
-    <option value="write_email" title="Reframe your message as a polished, professional email">Write an Email</option>
-    <option value="fix_problem" title="State your issue clearly so the system can help troubleshoot it">Fix a Problem</option>
-    <option value="generate_code" title="Turn your request into a code-generation prompt">Generate Code</option>
-    <option value="midjourney_prompt" title="Describe a visual scene for image generation tools like Midjourney">Midjourney Prompt</option>
-    <option value="explain" title="Ask the system to explain a concept clearly and simply">Explain Something</option>
-    <option value="creative_idea" title="Request creative ideas, such as names, projects, or slogans">Get Creative Ideas</option>
-  </select>
+<h1 style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+  <span class="material-icons" style="font-size: 26px;">auto_fix_high</span>
+  <span>Prompt Refiner</span>
+</h1>
 
-  <label for="platform">Platform:</label>
-  <small>Which tool will use this prompt?</small>
-  <select id="platform">
-    <option value="ChatGPT" title="Text-based assistant powered by OpenAI">ChatGPT</option>
-    <option value="Midjourney" title="AI-powered visual art generation tool">Midjourney</option>
-    <option value="Suno" title="AI music generation platform using text prompts">Suno</option>
-  </select>
 
-  <button onclick="refinePrompt()">Refine Prompt</button>
+    <label for="prompt">Enter your raw prompt:</label>
+    <textarea id="prompt" rows="3" placeholder="e.g. Help me write a short email about AI trends."></textarea>
 
-  <h2>✨ Refined Prompt:</h2>
-  <div id="output">No output yet.</div>
 
-  <div class="note">
-    ⚠️ Make sure your backend is running at <code>http://localhost:5000</code> before clicking the button.
+
+    <label for="intent">Intent:</label>
+    <small>Hover each option for explanation.</small>
+    <select id="intent">
+      <option value="">Auto-detect</option>
+      <option value="get_info" title="Ask a clear, specific question to get information">Get Information</option>
+      <option value="write_email" title="Turn into a prompt that asks ChatGPT to write an email">Write an Email</option>
+      <option value="fix_problem" title="Prompt to fix or troubleshoot something">Fix a Problem</option>
+      <option value="generate_code" title="Prompt to generate clean, relevant code">Generate Code</option>
+      <option value="midjourney_prompt" title="Describe a visual scene for Midjourney or similar">Midjourney Prompt</option>
+      <option value="explain" title="Ask ChatGPT to explain something clearly">Explain Something</option>
+      <option value="creative_idea" title="Request names, slogans, campaign or brand ideas">Get Creative Ideas</option>
+    </select>
+
+    <button onclick="refinePrompt()">✨ Refine Prompt</button>
+
+    <h2>Refined Prompt:</h2>
+<div id="output">
+  <button id="copyBtn" onclick="copyToClipboard()" title="Copy to clipboard">
+    <span class="material-icons" id="copyIcon">content_copy</span>
+  </button>
+  <span id="refinedText" class="fade">No output yet.</span>
+</div>
   </div>
+
+
 
   <script>
     async function refinePrompt() {
       const prompt = document.getElementById("prompt").value;
       const intent = document.getElementById("intent").value;
-      const platform = document.getElementById("platform").value;
+
+      const refinedTextEl = document.getElementById("refinedText");
+      const copyBtn = document.getElementById("copyBtn");
 
       try {
         const response = await fetch("http://localhost:5000/api/refine", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, intent, platform })
+          body: JSON.stringify({ prompt, intent })
         });
 
         const data = await response.json();
-        document.getElementById("output").innerText = data.refined || "⚠️ No refined prompt returned.";
+        const refined = data.refined || "⚠️ No refined prompt returned.";
+
+        refinedTextEl.innerText = refined;
+        refinedTextEl.classList.remove("fade");
+        copyBtn.style.display = "inline-block";
+
       } catch (err) {
-        document.getElementById("output").innerText = "🚨 Connection error. Is the backend server online?";
+        refinedTextEl.innerText = "🚨 Could not connect to backend.";
+        refinedTextEl.classList.add("fade");
+        copyBtn.style.display = "none";
       }
     }
+
+function copyToClipboard() {
+  const text = document.getElementById("refinedText").innerText;
+  const icon = document.getElementById("copyIcon");
+
+  navigator.clipboard.writeText(text).then(() => {
+    icon.innerText = "check";
+    icon.style.color = "#4caf50";
+    setTimeout(() => {
+      icon.innerText = "content_copy";
+      icon.style.color = "";
+    }, 1500);
+  });
+}
+
   </script>
 </body>
 </html>
