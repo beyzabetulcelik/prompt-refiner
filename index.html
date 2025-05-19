@@ -22,7 +22,7 @@
       margin-top: 15px;
       display: block;
     }
-    textarea, select, button {
+    textarea, button {
       width: 100%;
       padding: 10px;
       margin-top: 8px;
@@ -43,40 +43,13 @@
       border-top: 1px dashed #ccc;
       padding-top: 15px;
     }
-    small {
-      font-size: 0.9em;
-      color: #666;
-      display: block;
-      margin-bottom: 5px;
-    }
   </style>
 </head>
 <body>
-  <h1> Prompt Refiner</h1>
+  <h1>Prompt Refiner</h1>
 
   <label for="prompt">Your prompt:</label>
-  <textarea id="prompt" rows="4" placeholder="E.g. I can't open my file..."></textarea>
-
-  <label for="intent">What do you want to do?</label>
-  <small>Select the purpose of your prompt so the system can rewrite it more effectively.</small>
-
-  <select id="intent">
-  <option value="bilgi" title="Ask something clearly and in detail">Get Information</option>
-  <option value="mail" title="Turn your input into a proper email">Write an Email</option>
-  <option value="hata" title="Ask for help about a technical or practical problem">Fix a Problem</option>
-  <option value="kod" title="Request a clean code example for your need">Generate Code</option>
-  <option value="gorsel" title="Describe a visual scene for image generation tools">Visual Prompt (Midjourney)</option>
-  <option value="acikla" title="Explain a concept clearly and simply">Explain Something</option>
-  <option value="fikir" title="Ask for creative ideas like names or projects">Get Creative Ideas</option>
-</select>
-
-
-  <label for="platform">Platform:</label>
-  <select id="platform">
-    <option value="ChatGPT">ChatGPT</option>
-    <option value="Midjourney">Midjourney</option>
-    <option value="Suno">Suno</option>
-  </select>
+  <textarea id="prompt" rows="4" placeholder="E.g. Help me name my startup..."></textarea>
 
   <button onclick="refinePrompt()">Refine Prompt</button>
 
@@ -84,20 +57,18 @@
   <div id="output">No output yet.</div>
 
   <div class="note">
-    ⚠️ This is a frontend demo. If nothing happens, make sure the backend server is running and accessible from the internet.
+    ⚠️ This is a frontend demo. If nothing happens, make sure your backend is running on <code>localhost:5000</code>.
   </div>
 
   <script>
     async function refinePrompt() {
       const prompt = document.getElementById("prompt").value;
-      const intent = document.getElementById("intent").value;
-      const platform = document.getElementById("platform").value;
 
       try {
         const response = await fetch("http://localhost:5000/api/refine", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, intent, platform })
+          body: JSON.stringify({ prompt })
         });
 
         const data = await response.json();
