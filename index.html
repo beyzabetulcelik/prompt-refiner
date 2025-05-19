@@ -5,29 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prompt Refiner</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; background: #f9f9f9; color: #333; }
-    h1 { font-size: 2em; color: #2e2e2e; }
-    label { font-weight: bold; margin-top: 15px; display: block; }
-    textarea, select, button { width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 15px; font-size: 1em; }
-    #output { white-space: pre-wrap; background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 6px; }
-    .note { font-size: 0.9em; color: #777; margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      font-size: 2em;
+      color: #2e2e2e;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+    }
+    textarea, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 15px;
+      font-size: 1em;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 6px;
+    }
+    .note {
+      font-size: 0.9em;
+      color: #777;
+      margin-top: 20px;
+      border-top: 1px dashed #ccc;
+      padding-top: 15px;
+    }
+    small {
+      font-size: 0.9em;
+      color: #666;
+      display: block;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
-<h1>🎯 Prompt Refiner v2 – INTENT MODE</h1>
+  <h1> Prompt Refiner</h1>
 
   <label for="prompt">Your prompt:</label>
   <textarea id="prompt" rows="4" placeholder="E.g. I can't open my file..."></textarea>
 
   <label for="intent">What do you want to do?</label>
+  <small>Select the purpose of your prompt so the system can rewrite it more effectively.</small>
   <select id="intent">
-    <option value="bilgi">Get Information</option>
-    <option value="mail">Write an Email</option>
-    <option value="hata">Fix a Problem</option>
-    <option value="kod">Generate Code</option>
-    <option value="gorsel">Visual Prompt (Midjourney)</option>
-    <option value="acikla">Explain Something</option>
-    <option value="fikir">Get Creative Ideas</option>
+    <option value="bilgi">Get Information – Ask something clearly and in detail</option>
+    <option value="mail">Write an Email – Turn it into a proper message</option>
+    <option value="hata">Fix a Problem – Request help for a technical or practical issue</option>
+    <option value="kod">Generate Code – Ask for a clean code example</option>
+    <option value="gorsel">Visual Prompt (Midjourney) – Describe scenes for image generation</option>
+    <option value="acikla">Explain Something – Explain a topic simply like a teacher</option>
+    <option value="fikir">Get Creative Ideas – Ask for names, projects, or content ideas</option>
   </select>
 
   <label for="platform">Platform:</label>
@@ -43,7 +82,7 @@
   <div id="output">No output yet.</div>
 
   <div class="note">
-    ⚠️ This demo runs on a local server. If it doesn't work, the computer might be offline.
+    ⚠️ This is a frontend demo. If nothing happens, make sure the backend server is running and accessible from the internet.
   </div>
 
   <script>
@@ -62,7 +101,7 @@
         const data = await response.json();
         document.getElementById("output").innerText = data.refined || "No refined prompt returned.";
       } catch (err) {
-        document.getElementById("output").innerText = "🚨 Connection error. Local server might be offline.";
+        document.getElementById("output").innerText = "🚨 Connection error. Is the backend server online?";
       }
     }
   </script>
