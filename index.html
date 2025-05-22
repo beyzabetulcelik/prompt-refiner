@@ -226,7 +226,8 @@ h1 {
         copyBtn.style.display = "inline-block";
 
       } catch (err) {
-        refinedTextEl.innerText = "🚨 Could not connect to backend.";
+        refinedTextEl.innerText = "This tool might not work right now because its backend runs entirely on Betül’s local machine.
+The interface is live — but the real magic happens on her setup. If her laptop's not online, the tool takes a break.";
         refinedTextEl.classList.add("fade");
         copyBtn.style.display = "none";
       }
